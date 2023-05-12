@@ -1,0 +1,5 @@
+version: "3.10"
+services:
+  main:
+    build: .
+    container_name: mybot
