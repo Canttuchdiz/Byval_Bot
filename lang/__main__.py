@@ -1,7 +1,9 @@
 from pathlib import Path
 from dotenv import load_dotenv
 import discord
+from discord import Color
 from discord.ext import commands
+from pretty_help import PrettyHelp
 import os
 import traceback
 import sys
@@ -10,7 +12,7 @@ MY_DIR = Path(__file__).parent
 
 load_dotenv()
 
-TOKEN: str = os.getenv("token")
+TOKEN: str = str(os.environ["TOKEN"])
 
 intents = discord.Intents.default()
 intents.members = True
@@ -55,6 +57,7 @@ class Bot(commands.Bot):
 
 # Creates instance of the bot and then runs it
 client = Bot()
+client.help_command = PrettyHelp(color=Color.dark_teal(), dm_help=True)
 
 
 @client.command()

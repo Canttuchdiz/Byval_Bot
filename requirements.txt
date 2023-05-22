@@ -6,3 +6,4 @@ typing-extensions
 asyncpg
 aiofiles
 aiopyston
+discord-pretty-help

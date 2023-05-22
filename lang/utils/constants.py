@@ -6,7 +6,10 @@ class _Lang(Enum):
     python = "py"
     csharp = "cs"
     c = "c"
-    js = "js"
+    javascript = "js"
+    cpp = "cpp"
+    brainfuck = "bf"
+    lua = "lua"
 
 
 class _Embeds:
