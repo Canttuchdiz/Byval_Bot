@@ -1,0 +1,15 @@
+// database
+datasource db {
+  provider = "sqlite"
+  url      = "file:./database.db"
+}
+
+// generator
+generator client {
+  provider             = "prisma-client-py"
+  recursive_type_depth = 5
+}
+
+model Command {
+
+}

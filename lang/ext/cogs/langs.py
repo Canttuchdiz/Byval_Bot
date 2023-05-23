@@ -21,6 +21,7 @@ class Langs(Cog):
         embed = Embed(title="Languages", color=Color.yellow())
         aclangs = ', '.join([lang.name.capitalize() for lang in _Lang])
         embed.add_field(name="Active", value=aclangs)
+        embed.add_field(name="Count", value=len(_Lang))
         await ctx.send(embed=embed)
 
 

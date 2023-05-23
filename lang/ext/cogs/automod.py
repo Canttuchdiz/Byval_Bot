@@ -6,6 +6,7 @@ import traceback
 
 
 class AutoModCog(Cog):
+
     group = Group(name="rule", description="The group behind all automod commands.")
 
     def __init__(self, bot: Bot) -> None:
@@ -61,6 +62,7 @@ class AutoModCog(Cog):
         rules_list = ', '.join([rule.name for rule in rules])
         embed = Embed(title="Automod Rules", description=rules_list, color=Color.blue())
         await interaction.response.send_message(embed=embed)
+
 
 async def setup(bot) -> None:
     await bot.add_cog(AutoModCog(bot))
