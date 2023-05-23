@@ -1,5 +1,6 @@
 from discord import Embed, Color
 from discord.ext.commands import Cog, command, Bot, Context
+from discord import HTTPException
 from lang.ext.models.pyston_ext import Pyston, _Lang
 from lang.ext.models.formatter import Formatter
 
@@ -13,8 +14,11 @@ class Langs(Cog):
     async def evaluate(self, ctx: Context, *, lang: str) -> None:
         client = Pyston()
         output = await client.run(lang)
-        embed: Embed = Formatter.out_format(output)
-        await ctx.send(embed=embed)
+        try:
+            embed: Embed = Formatter.out_format(output)
+            await ctx.send(embed=embed)
+        except HTTPException as e:
+            await ctx.send("Process output surpasses embed character limit.")
 
     @command(name="langs")
     async def langs(self, ctx: Context) -> None:
