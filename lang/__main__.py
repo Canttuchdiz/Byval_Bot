@@ -55,6 +55,7 @@ class Bot(commands.Bot):
 # Creates instance of the bot and then runs it
 client = Bot()
 client.remove_command('help')
+client.total_rules = 0
 
 
 @client.command()

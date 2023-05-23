@@ -8,7 +8,7 @@ import traceback
 class AutoModCog(Cog):
     group = Group(name="rule", description="The group behind all automod commands.")
 
-    def __int__(self, bot: Bot) -> None:
+    def __init__(self, bot: Bot) -> None:
         self.client = bot
 
     async def trigger_autocomplete(self, interaction: Interaction, current: str) -> list:
@@ -32,6 +32,7 @@ class AutoModCog(Cog):
                                                         trigger=AutoModTrigger(type=am_trigger),
                                                         actions=[AutoModRuleAction()], enabled=enabled)
             await interaction.response.send_message("Rule successfully added!", ephemeral=True)
+            self.client.total_rules += 1
         except HTTPException as e:
             await interaction.response.send_message("Rule already exists.", ephemeral=True)
 

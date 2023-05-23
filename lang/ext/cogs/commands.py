@@ -18,6 +18,10 @@ class Commands(commands.Cog):
         await ctx.send('Pong! {0}'.format(round(self.client.latency, 1)))
 
     @commands.command()
+    async def rules(self, ctx: commands.Context) -> None:
+        await ctx.send(self.client.total_rules)
+
+    @commands.command()
     async def purge(self, ctx: commands.Context, message_count: str) -> None:
         await ctx.channel.purge(limit=int(message_count) + 1)
 
