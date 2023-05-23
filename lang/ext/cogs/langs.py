@@ -18,10 +18,9 @@ class Langs(Cog):
 
     @command(name="langs")
     async def langs(self, ctx: Context) -> None:
-        embed = Embed(title="Languages", color=Color.yellow())
+        embed = Embed(title="Languages", description=f"*{len(_Lang)//10*10}+ langs supported!*", color=Color.yellow())
         aclangs = ', '.join([lang.name.capitalize() for lang in _Lang])
         embed.add_field(name="Active", value=aclangs)
-        embed.add_field(name="Count", value=len(_Lang))
         await ctx.send(embed=embed)
 
 
