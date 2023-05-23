@@ -36,7 +36,6 @@ class Bot(commands.Bot):
     #
     #     sys.__excepthook__(exctype, value, traceback)
 
-
     # Loading all cogs
     async def setup_hook(self) -> None:
 
@@ -53,11 +52,9 @@ class Bot(commands.Bot):
                     traceback.print_exc()
 
 
-
-
 # Creates instance of the bot and then runs it
 client = Bot()
-client.help_command = PrettyHelp(color=Color.dark_teal(), dm_help=True)
+client.remove_command('help')
 
 
 @client.command()

@@ -1,6 +1,6 @@
 from discord import Interaction, AutoModRuleEventType, AutoModRuleTriggerType, \
     AutoModRuleActionType, AutoModTrigger, AutoModRuleAction, HTTPException
-from discord.app_commands import command, Group, autocomplete, Choice
+from discord.app_commands import command, Group, autocomplete, Choice, describe
 from discord.ext.commands import Cog, Bot
 import traceback
 
@@ -22,17 +22,18 @@ class AutoModCog(Cog):
             traceback.print_exc()
 
     @group.command(name="create", description="Creates an automod rule.")
-    @autocomplete(am_trigger=trigger_autocomplete)
-    async def create_rule(self, interaction: Interaction, name: str, am_trigger: str, enabled: bool) -> None:
+    @describe(name="Name of rule", trigger="Automod trigger", enabled="If rule is enabled")
+    @autocomplete(trigger=trigger_autocomplete)
+    async def create_rule(self, interaction: Interaction, name: str, trigger: str, enabled: bool) -> None:
         try:
-            trigger = AutoModRuleTriggerType(int(am_trigger))
+            am_trigger = AutoModRuleTriggerType(int(trigger))
             await interaction.guild.create_automod_rule(name=name,
                                                         event_type=AutoModRuleEventType.message_send,
-                                                        trigger=AutoModTrigger(type=trigger),
+                                                        trigger=AutoModTrigger(type=am_trigger),
                                                         actions=[AutoModRuleAction()], enabled=enabled)
-            await interaction.response.send_message("Rule successfully added!")
+            await interaction.response.send_message("Rule successfully added!", ephemeral=True)
         except HTTPException as e:
-            await interaction.response.send_message("Rule already exists.")
+            await interaction.response.send_message("Rule already exists.", ephemeral=True)
 
 
 async def setup(bot) -> None:
