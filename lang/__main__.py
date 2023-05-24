@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import discord
 from discord import Color
 from discord.ext import commands
-from pretty_help import PrettyHelp
 import os
 import traceback
 import sys
