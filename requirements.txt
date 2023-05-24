@@ -7,4 +7,3 @@ asyncpg
 aiofiles
 aiopyston
 prisma
-discord-pretty-help
