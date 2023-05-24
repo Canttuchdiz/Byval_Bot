@@ -7,3 +7,4 @@ asyncpg
 aiofiles
 aiopyston
 prisma
+jishaku

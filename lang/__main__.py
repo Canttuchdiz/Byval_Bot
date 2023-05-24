@@ -49,7 +49,7 @@ class Bot(commands.Bot):
                 except Exception as e:
                     print(f"Failed to load cog {filename}")
                     traceback.print_exc()
-
+        await self.load_extension('jishaku')
 
 # Creates instance of the bot and then runs it
 client = Bot()
