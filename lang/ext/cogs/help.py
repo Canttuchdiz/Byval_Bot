@@ -15,12 +15,12 @@ class HelpCog(Cog):
                         "with a specialty of evaluating code.*\n\n"
                         "**To perform an ``!eval`` operation follow the example below:**\n"
                         "!eval \`\`\`(lang)\nprint('Hello World')\n\`\`\`\n\n"
-                        "**You can also create and delete automod rules via the group``/rule``!**\n"
-                        "Read the descriptions of the commands to learn more.\n"
-                        "[**Add Me!**](https://discord.com/api/oauth2/authorize?client_id=1105318211718754314&"
+                        "**You can also create and delete automod rules via the group ``/rule``!**\n\n"
+                        "[**Add Me To Your Server!**](https://discord.com/api/oauth2/authorize?client_id=1105318211718754314&"
                         "permissions=277025778784&scope=bot%20applications.commands)",
             color=Color.blue()
         )
+        embed.set_footer(text="Read the descriptions of the commands to learn more.")
         await ctx.send(embed=embed)
 
 
