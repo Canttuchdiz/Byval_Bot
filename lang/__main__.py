@@ -51,6 +51,7 @@ class Bot(commands.Bot):
                     traceback.print_exc()
         await self.load_extension('jishaku')
 
+
 # Creates instance of the bot and then runs it
 client = Bot()
 client.remove_command('help')

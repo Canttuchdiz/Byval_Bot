@@ -8,3 +8,4 @@ aiofiles
 aiopyston
 prisma
 jishaku
+pydantic
