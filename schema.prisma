@@ -10,6 +10,12 @@ generator client {
   recursive_type_depth = 5
 }
 
-model Command {
+model Command_MDL {
+  id String @id @default(uuid())
+  userId BigInt
+  name String
+  response String
+  guildId BigInt
 
+  @@unique([name, guildId])
 }
