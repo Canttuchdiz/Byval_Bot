@@ -21,7 +21,6 @@ class Command:
     userId: Snowflake
     name: str
     response: str
-    enabled: bool
     guildId: Snowflake
 
     @staticmethod
@@ -46,7 +45,7 @@ class CommandManager:
             command_obj = await self.get_command(command_name, int(guild_id))
             return command_obj.response
         except IndexError as e:
-            return None
+            return
 
     async def commands_embed(self, guild_id: Snowflake):
         commands = await self.get_commands(int(guild_id))
@@ -61,7 +60,6 @@ class CommandManager:
                 'userId': int(command.userId),
                 'name': command.name,
                 'response': command.response,
-                'enabled': command.enabled,
                 'guildId': int(command.guildId)
             }
         )
@@ -78,5 +76,5 @@ class CommandManager:
 
     async def get_command(self, name: str, guildId: Snowflake) -> Command:
         data: Command_MDL = await self.prisma.where_unique("command_mdl", 'name', 'guildId', name, guildId)
-        command = Command(data.userId, data.name, data.response, data.enabled, data.guildId)
+        command = Command(data.userId, data.name, data.response, data.guildId)
         return command

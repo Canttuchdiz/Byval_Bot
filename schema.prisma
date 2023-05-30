@@ -15,7 +15,6 @@ model Command_MDL {
   userId BigInt
   name String
   response String
-  enabled Boolean @default(true)
   guildId BigInt
 
   @@unique([name, guildId])

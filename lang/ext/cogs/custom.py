@@ -25,22 +25,29 @@ class CustomCog(Cog):
                 for command_obj in commands if current.lower() in command_obj.name.lower()]
 
     @group.command(name="create", description="Creates a custom command.")
-    @describe(name="Name of command", response="Command response", enabled="Command trigger-ability")
-    async def create_command(self, interaction: Interaction, name: str, response: str, enabled: bool) -> None:
-        new_command = Command(interaction.user.id, name.lower(), response, enabled, interaction.guild_id)
-        try:
-            await self.command_manager.create_command(new_command)
-            await interaction.response.send_message("Command injection successful.", ephemeral=True)
-        except UniqueViolationError as e:
-            await interaction.response.send_message("Command with name already exists.", ephemeral=True)
+    @describe(name="Name of command", response="Command response")
+    async def create_command(self, interaction: Interaction, name: str, response: str) -> None:
+        if len(name.split()) == 1:
+            new_command = Command(interaction.user.id, name.lower(), response, interaction.guild_id)
+            try:
+                await self.command_manager.create_command(new_command)
+                await interaction.response.send_message("Command injection successful.", ephemeral=True)
+                return
+            except UniqueViolationError as e:
+                await interaction.response.send_message("Command with name already exists.", ephemeral=True)
+                return
+        await interaction.response.send_message("Command name must be one word.", ephemeral=True)
 
     @group.command(name="remove", description="Removes a custom command.")
     @describe(name="Name of command")
     @autocomplete(name=command_autocomplete)
     async def remove_command(self, interaction: Interaction, name: str) -> None:
-        command_obj = await self.command_manager.get_command(name, interaction.guild_id)
-        await self.command_manager.remove_command(command_obj)
-        await interaction.response.send_message("Command deletion successful.", ephemeral=True)
+        try:
+            command_obj = await self.command_manager.get_command(name, interaction.guild_id)
+            await self.command_manager.remove_command(command_obj)
+            await interaction.response.send_message("Command deletion successful.", ephemeral=True)
+        except IndexError as e:
+            await interaction.response.send_message("Command does not exist.", ephemeral=True)
 
     @group.command(name="list", description="Lists created commands.")
     async def list_commands(self, interaction: Interaction) -> None:
@@ -49,7 +56,7 @@ class CustomCog(Cog):
 
     @Cog.listener()
     async def on_message(self, message: Message) -> None:
-        if not message.author.bot and message.content.startswith('!'):
+        if not message.author.bot and message.content.startswith('?'):
             command_trigger = Command.parse_trigger(message.content.lower())
             response = await self.command_manager.retrieve_response(command_trigger, message.guild.id)
             if response:
