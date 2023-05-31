@@ -57,10 +57,13 @@ class CustomCog(Cog):
     @Cog.listener()
     async def on_message(self, message: Message) -> None:
         if not message.author.bot and message.content.startswith('?'):
-            command_trigger = Command.parse_trigger(message.content.lower())
-            response = await self.command_manager.retrieve_response(command_trigger, message.guild.id)
-            if response:
-                await message.channel.send(response)
+            try:
+                command_trigger = Command.parse_trigger(message.content.lower())
+                response = await self.command_manager.retrieve_response(command_trigger, message.guild.id)
+                if response:
+                    await message.channel.send(response)
+            except IndexError as e:
+                pass
 
 
 async def setup(bot) -> None:
