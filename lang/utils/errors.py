@@ -1,3 +1,7 @@
+class InvalidGroup(Exception):
+    pass
+
+
 class UniqueException(Exception):
     pass
 
