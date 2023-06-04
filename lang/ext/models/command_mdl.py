@@ -3,17 +3,21 @@ from discord import Embed, Color, Message
 from discord.ext.commands import Bot
 from discord.types.snowflake import Snowflake
 from lang.ext.models.prisma_ext import PrismaExt
+from lang.utils.constants import _RegexExp
+from lang.utils.errors import UniqueException, RoleMentionException
 from prisma.models import Command_MDL
 from prisma.errors import UniqueViolationError
 from dataclasses import dataclass
 from typing import List, Union
+from re import match
 from enum import Enum
 import inspect
 
 
 # class Status(Enum):
 #     SUCCESS = 0
-#     UNIQUE = UniqueViolationError
+#     INVALID_ROLE = 1
+#     UNIQUE_VIOLATION = 2
 
 
 @dataclass
@@ -55,15 +59,24 @@ class CommandManager:
         return embed
 
     async def create_command(self, command: Command) -> Command_MDL:
-        command_obj = await self.prisma.command_mdl.create(
-            data={
-                'userId': int(command.userId),
-                'name': command.name,
-                'response': command.response,
-                'guildId': int(command.guildId)
-            }
-        )
-        return command_obj
+        name_mention = _RegexExp.ROLE_MENTION.match(command.name)
+        response_mention = _RegexExp.ROLE_MENTION.match(command.response)
+        if not name_mention and not response_mention:
+            try:
+                has_command = await self.prisma.where_unique("command_mdl", "name", "guildId",
+                                                             command.name, command.guildId)
+                raise UniqueException(f"Pre-existing command with name: {command.name}")
+            except IndexError as e:
+                command_obj = await self.prisma.command_mdl.create(
+                    data={
+                        'userId': int(command.userId),
+                        'name': command.name,
+                        'response': command.response,
+                        'guildId': int(command.guildId)
+                    }
+                )
+                return command_obj
+        raise RoleMentionException(f"Mention of roles cannot be in name or response")
 
     async def remove_command(self, command: Command) -> Command_MDL:
         command_obj = await self.prisma.command_mdl.delete_many(

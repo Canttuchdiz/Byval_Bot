@@ -3,7 +3,7 @@ from discord import Interaction, Message, Embed, Color
 from discord.app_commands import command, Group, autocomplete, Choice, describe
 from discord.ext.commands import Cog, Bot
 from lang.ext.models.prisma_ext import PrismaExt
-from lang.ext.models.command_mdl import CommandManager, Command
+from lang.ext.models.command_mdl import CommandManager, Command, RoleMentionException, UniqueException
 from prisma.errors import UniqueViolationError
 from typing import List
 import traceback
@@ -28,12 +28,15 @@ class CustomCog(Cog):
     @describe(name="Name of command", response="Command response")
     async def create_command(self, interaction: Interaction, name: str, response: str) -> None:
         if len(name.split()) == 1:
-            new_command = Command(interaction.user.id, name.lower(), response, interaction.guild_id)
+            command_obj = Command(interaction.user.id, name.lower(), response, interaction.guild_id)
             try:
-                await self.command_manager.create_command(new_command)
+                await self.command_manager.create_command(command_obj)
                 await interaction.response.send_message("Command injection successful.", ephemeral=True)
                 return
-            except UniqueViolationError as e:
+            except RoleMentionException:
+                await interaction.response.send_message("You cannot mention any roles in your command.", ephemeral=True)
+                return
+            except UniqueException:
                 await interaction.response.send_message("Command with name already exists.", ephemeral=True)
                 return
         await interaction.response.send_message("Command name must be one word.", ephemeral=True)
