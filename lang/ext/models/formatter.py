@@ -16,3 +16,4 @@ class Formatter:
         embed: Embed = _Embeds.embs[type(output)]
         embed.description = _Embeds.embnl.format(output.capitalize())
         return embed
+

@@ -1,4 +1,5 @@
 from discord import Embed, Color
+from re import compile
 from enum import Enum
 
 
@@ -92,3 +93,7 @@ class _Embeds:
     embs = {True: Embed(title="Execution Completed", color=Color.green()),
             False: Embed(title="Execution Error", color=Color.red()),
             str: Embed(title="Compilation Error", color=Color.red())}
+
+
+class _RegexExp:
+    ROLE_MENTION = compile(r"\<@&\d{18,}\>")
