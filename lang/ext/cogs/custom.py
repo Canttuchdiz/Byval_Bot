@@ -3,7 +3,8 @@ from discord import Interaction, Message, Embed, Color, AllowedMentions
 from discord.app_commands import command, Group, autocomplete, Choice, describe
 from discord.ext.commands import Cog, Bot
 from lang.ext.models.prisma_ext import PrismaExt
-from lang.ext.models.command_mdl import CommandManager, Command, CommandMentionException, UniqueException
+from lang.ext.models.command_mdl import CommandManager, Command, CommandMentionException,\
+    UniqueException, FieldCharLimitException, _DiscordLimits
 from prisma.errors import UniqueViolationError
 from typing import List
 import traceback
@@ -27,6 +28,7 @@ class CustomCog(Cog):
     @group.command(name="create", description="Creates a custom command.")
     @describe(name="Name of command", response="Command response")
     async def create_command(self, interaction: Interaction, name: str, response: str) -> None:
+        print(len(response))
         if len(name.split()) == 1:
             command_obj = Command(interaction.user.id, name.lower(), response, interaction.guild_id)
             try:
@@ -35,6 +37,10 @@ class CustomCog(Cog):
                 return
             # except CommandMentionException: await interaction.response.send_message("You cannot mention any roles
             # in your command.", ephemeral=True) return
+            except FieldCharLimitException:
+                await interaction.response.send_message(f"Response must have fewer than "
+                                                        f"{_DiscordLimits.FIELD_MAX} chars.", ephemeral=True)
+                return
             except UniqueException:
                 await interaction.response.send_message("Command with name already exists.", ephemeral=True)
                 return

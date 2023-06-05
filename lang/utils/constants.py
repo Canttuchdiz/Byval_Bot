@@ -97,3 +97,7 @@ class _Embeds:
 
 class _RegexExp:
     ROLE_MENTION = compile(r"\<@&\d{18,}\>")
+
+
+class _DiscordLimits:
+    FIELD_MAX = 1024
