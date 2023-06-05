@@ -3,8 +3,8 @@ from discord import Embed, Color, Message
 from discord.ext.commands import Bot
 from discord.types.snowflake import Snowflake
 from lang.ext.models.prisma_ext import PrismaExt
-from lang.utils.constants import _RegexExp
-from lang.utils.errors import UniqueException, CommandMentionException
+from lang.utils.constants import _RegexExp, _DiscordLimits
+from lang.utils.errors import UniqueException, CommandMentionException, FieldCharLimitException
 from prisma.models import Command_MDL
 from prisma.errors import UniqueViolationError
 from dataclasses import dataclass
@@ -61,20 +61,22 @@ class CommandManager:
     async def create_command(self, command: Command) -> Command_MDL:
         # name_mention = _RegexExp.ROLE_MENTION.match(command.name)
         # response_mention = _RegexExp.ROLE_MENTION.match(command.response)
-        try:
-            await self.prisma.where_unique("command_mdl", "name", "guildId",
-                                           command.name, command.guildId)
-            raise UniqueException(f"Pre-existing command with name: {command.name}")
-        except IndexError as e:
-            command_obj = await self.prisma.command_mdl.create(
-                data={
-                    'userId': int(command.userId),
-                    'name': command.name,
-                    'response': command.response,
-                    'guildId': int(command.guildId)
-                }
-            )
-            return command_obj
+        if len(command.response) <= _DiscordLimits.FIELD_MAX:
+            try:
+                await self.prisma.where_unique("command_mdl", "name", "guildId",
+                                               command.name, command.guildId)
+                raise UniqueException(f"Pre-existing command with name: {command.name}")
+            except IndexError as e:
+                command_obj = await self.prisma.command_mdl.create(
+                    data={
+                        'userId': int(command.userId),
+                        'name': command.name,
+                        'response': command.response,
+                        'guildId': int(command.guildId)
+                    }
+                )
+                return command_obj
+        raise FieldCharLimitException(f"Surpassed field char limit: {_DiscordLimits.FIELD_MAX}")
 
     async def remove_command(self, command: Command) -> Command_MDL:
         command_obj = await self.prisma.command_mdl.delete_many(

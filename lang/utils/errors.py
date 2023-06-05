@@ -8,3 +8,6 @@ class UniqueException(Exception):
 
 class CommandMentionException(Exception):
     pass
+
+class FieldCharLimitException(Exception):
+    pass
