@@ -100,4 +100,4 @@ class _RegexExp:
 
 
 class _DiscordLimits:
-    FIELD_MAX = 1024
+    FIELD_MAX = 100

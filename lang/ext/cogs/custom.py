@@ -39,7 +39,7 @@ class CustomCog(Cog):
             # in your command.", ephemeral=True) return
             except FieldCharLimitException:
                 await interaction.response.send_message(f"Response must have fewer than "
-                                                        f"{_DiscordLimits.FIELD_MAX} chars.", ephemeral=True)
+                                                        f"{_DiscordLimits.FIELD_MAX} characters.", ephemeral=True)
                 return
             except UniqueException:
                 await interaction.response.send_message("Command with name already exists.", ephemeral=True)
