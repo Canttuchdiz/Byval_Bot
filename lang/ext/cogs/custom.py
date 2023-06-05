@@ -1,9 +1,9 @@
 import asyncio
-from discord import Interaction, Message, Embed, Color
+from discord import Interaction, Message, Embed, Color, AllowedMentions
 from discord.app_commands import command, Group, autocomplete, Choice, describe
 from discord.ext.commands import Cog, Bot
 from lang.ext.models.prisma_ext import PrismaExt
-from lang.ext.models.command_mdl import CommandManager, Command, RoleMentionException, UniqueException
+from lang.ext.models.command_mdl import CommandManager, Command, CommandMentionException, UniqueException
 from prisma.errors import UniqueViolationError
 from typing import List
 import traceback
@@ -33,9 +33,8 @@ class CustomCog(Cog):
                 await self.command_manager.create_command(command_obj)
                 await interaction.response.send_message("Command injection successful.", ephemeral=True)
                 return
-            except RoleMentionException:
-                await interaction.response.send_message("You cannot mention any roles in your command.", ephemeral=True)
-                return
+            # except CommandMentionException: await interaction.response.send_message("You cannot mention any roles
+            # in your command.", ephemeral=True) return
             except UniqueException:
                 await interaction.response.send_message("Command with name already exists.", ephemeral=True)
                 return
@@ -64,7 +63,7 @@ class CustomCog(Cog):
                 command_trigger = Command.parse_trigger(message.content.lower())
                 response = await self.command_manager.retrieve_response(command_trigger, message.guild.id)
                 if response:
-                    await message.channel.send(response)
+                    await message.channel.send(response, allowed_mentions=AllowedMentions.none())
             except IndexError as e:
                 pass
 

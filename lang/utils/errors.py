@@ -6,5 +6,5 @@ class UniqueException(Exception):
     pass
 
 
-class RoleMentionException(Exception):
+class CommandMentionException(Exception):
     pass
